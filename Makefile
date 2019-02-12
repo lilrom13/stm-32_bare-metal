@@ -19,7 +19,7 @@ all: $(ELFFILES)
 .PHONY: connect debug clean
 
 connect:
-	JLinkGDBServer -device MKL46Z256xxx4 -if SWD -speed auto
+	JLinkGDBServer -device STM32L475VG -endian little -if SWD -speed auto -ir -LocalhostOnly
 
 debug:
 	$(GDB) -x gdbcmd
