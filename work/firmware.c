@@ -1,4 +1,5 @@
 #include "led.h"
+#include "clocks.h"
 
 void delay(int loop)
 {
@@ -16,17 +17,19 @@ int fibo(int n)
 int main(int ac, char **av)
 {
   led_init();
+  clocks_init();
 
-  led_g_on();
-  
   while (1)
   {
+    led_g_on();
+    delay(100000*10);
     led_state(LED_OFF);
-    delay(100000);
+    delay(100000*10);
     led_state(LED_BLUE);
-    delay(100000);
+    delay(100000*10);
     led_state(LED_YELLOW);
-    delay(100000);
+    led_g_off();
+    delay(100000*10);
   }
 
   return fibo(8);

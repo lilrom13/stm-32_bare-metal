@@ -1,6 +1,3 @@
-#include <stdint.h>
-
-#include "led.h"
 /*H**********************************************************************
 *
 *Description:
@@ -24,49 +21,35 @@
 *       So we have to set bit 29 to 1 & bit 28 to 0 for the GPIOB_MODER register to 1
 *
 *       Turn on procedure :
-        To turn on the led we have to put the pin PB14 in hight state, for that
+*        To turn on the led we have to put the pin PB14 in hight state, for that
 *
 *H*/
 
-// common address
-#define RCC_AHB2ENR_BASE 0x40021000
-#define RCC_AHB2ENR_OFFSET 0x4C
-#define GPIO_BSRR_OFFSET 0x18
+#include <stdint.h>
 
-// GPIO ports address
-#define GPIOB_MODER_BASE 0x48000400
-#define GPIOC_MODER_BASE 0x48000800
-
-#define RCC_AHB2ENR (*(volatile uint32_t *)(RCC_AHB2ENR_BASE+RCC_AHB2ENR_OFFSET))
-
-// GPIO B address
-#define GPIOB_MODER (*(volatile uint32_t *)(GPIOB_MODER_BASE))
-#define GPIOB_BSRR (*(volatile uint32_t *) (GPIOB_MODER_BASE+GPIO_BSRR_OFFSET))
-
-// GPIO C address
-#define GPIOC_MODER (*(volatile uint32_t *) (GPIOC_MODER_BASE))
-#define GPIOC_BSRR (*(volatile uint32_t *) (GPIOC_MODER_BASE+GPIO_BSRR_OFFSET))
+#include "stm32l475xx.h"
+#include "led.h"
 
 void led_init()
 {
   // enable clock for GPIO B & C
-  RCC_AHB2ENR |= (1 << 1) | (1 << 2);
+  RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN | RCC_AHB2ENR_GPIOCEN;
 
   // turning GPIO B MODE 14 into 'General purpose output mode'
-  GPIOB_MODER = (GPIOB_MODER & ~(3 << 28)) | (1 << 28);
+  GPIOB->MODER = GPIOB->MODER & ~GPIO_MODER_MODE14_1;
 
   // turning GPIO C MODE 9 into 'General purpose output mode'
-  GPIOC_MODER = (GPIOC_MODER & ~(3 << 18)) | (1 << 18);
+  GPIOC->MODER = GPIOB->MODER & ~GPIO_MODER_MODE9_1;
 }
 
 void led_g_on()
 {
-  GPIOB_BSRR |= (1 << 14);
+  GPIOB->BSRR |= GPIO_BSRR_BS14;
 }
 
 void led_g_off()
 {
-  GPIOB_BSRR |= (1 << 30);
+  GPIOB->BSRR |= GPIO_BSRR_BR14;
 }
 
 void led_state(state st)
@@ -74,13 +57,13 @@ void led_state(state st)
   switch (st)
   {
     case LED_OFF:
-      GPIOC_MODER = (GPIOC_MODER & ~(0 << 18)) | (1 << 18);
+      GPIOC->MODER = (GPIOC->MODER & ~(0 << 18)) | (1 << 18);
       break;
     case LED_YELLOW:
-      GPIOC_BSRR |= (1 << 9);
+      GPIOC->BSRR |= GPIO_BSRR_BS9;
       break;
     case LED_BLUE:
-      GPIOC_BSRR |= (1 << 25);
+      GPIOC->BSRR |= GPIO_BSRR_BR9;
       break;
   }
 }
