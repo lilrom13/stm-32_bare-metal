@@ -6,6 +6,7 @@ MEMORY {
 
 SECTIONS {
   .text : {
+    crt0.o (.text)
     *(.text)
     _etext = . ;
   } > SRAM1
