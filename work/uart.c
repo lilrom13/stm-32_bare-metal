@@ -33,6 +33,36 @@
 *
 *H*/
 
+/*
+Transmission using DMA
+DMA mode can be enabled for transmission by setting DMAT bit in the USART_CR3
+register. Data is loaded from a SRAM area configured using the DMA peripheral (refer to
+Section 11: Direct memory access controller (DMA) on page 337) to the USART_TDR
+register whenever the TXE bit is set. To map a DMA channel for USART transmission, use
+the following procedure (x denotes the channel number):
+1. Write the USART_TDR register address in the DMA control register to configure it as
+the destination of the transfer. The data is moved to this address from memory after
+each TXE event.
+2. Write the memory address in the DMA control register to configure it as the source of
+the transfer. The data is loaded into the USART_TDR register from this memory area
+after each TXE event.
+3. Configure the total number of bytes to be transferred to the DMA control register.
+4. Configure the channel priority in the DMA register
+5. Configure DMA interrupt generation after half/ full transfer as required by the
+application.
+6. Clear the TC flag in the USART_ISR register by setting the TCCF bit in the
+USART_ICR register.
+7. Activate the channel in the DMA register.
+When the number of data transfers programmed in the DMA Controller is reached, the DMA
+controller generates an interrupt on the DMA channel interrupt vector.
+In transmission mode, once the DMA has written all the data to be transmitted (the TCIF flag
+is set in the DMA_ISR register), the TC flag can be monitored to make sure that the USART 
+communication is complete. This is required to avoid corrupting the last transmission before
+disabling the USART or entering Stop mode. Software must wait until TC=1. The TC flag
+remains cleared during all data transfers and it is set by hardware at the end of transmission
+of the last frame.
+*/
+
 #include <stddef.h>
 #include "stm32l475xx.h"
 #include "uart.h"
@@ -77,11 +107,39 @@ void uart_init()
 
     // enable transmiter and receiver
     USART1->CR1 |= USART_CR1_RE | USART_CR1_TE | USART_CR1_UE;
+
+    // activing DMA mode (DMA mode can be enabled for transmission by setting DMAT bit in the USART_CR3 register)
+    USART1->CR3 |= USART_CR3_DMAT;
 }
 
 void uart_putchar(uint8_t c)
 {
+    /*
+    Character Transmission Procedure (CTP)
+        1. Program the M bits in USART_CR1 to define the word length..................................(✅)
+        2. Select the desired baud rate using the USART_BRR register..................................(✅)
+        3. Program the number of stop bits in USART_CR2...............................................(✅)
+        4. Enable the USART by writing the UE bit in USART_CR1 register to 1..........................(✅)
+        5. (NOT NEEDED) Select DMA enable (DMAT) in USART_CR3 if multibuffer
+            communication is to take place. Configure the DMA register as explained
+            in multibuffer communication..............................................................(❌)
+        6. Set the TE bit in USART_CR1 to send an idle frame as first transmission....................(✅)
+        7. Write the data to send in the USART_TDR register (this clears the TXE bit). Repeat this....(✅)
+            for each data to be transmitted in case of single buffer.
+        8. After writing the last data into the USART_TDR register, wait until TC=1. This indicates...(❌)
+            that the transmission of the last frame is complete. This is required for instance when
+            the USART is disabled or enters the Halt mode to avoid corrupting the last
+            transmission.
+    */
 
+    // CTP 4.
+    USART1->CR1 |= USART_CR1_UE;
+
+    // CTP 6.
+    USART1->CR1 |= USART_CR1_TE;
+
+    // CTP 7.
+    USART1->TDR = (USART1->TDR & ~USART_TDR_TDR_Msk) | (c << USART_TDR_TDR_Pos);
 }
 
 uint8_t uart_getchar()
@@ -91,7 +149,6 @@ uint8_t uart_getchar()
 
 void uart_puts(const uint8_t *s)
 {
-
 }
 
 void uart_gets(uint8_t *s, size_t size)
