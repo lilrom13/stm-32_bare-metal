@@ -8,7 +8,7 @@ ASFLAGS=-g -mcpu=cortex-m4
 CFLAGS=$(INCLUDE) -Wall -Werror -g -O1 -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16
 LDFLAGS=-nostdlib -g -T ld_ram.lds
 EXEC=firmware
-OBJ= init.o firmware.o crt0.o led.o clocks/clocks.o
+OBJ= init.o firmware.o crt0.o led.o clocks/clocks.o uart.o
 CFILES= $(wildcard *.c)
 DEPS = $(patsubst %.c,%.d,$(CFILES))
 
