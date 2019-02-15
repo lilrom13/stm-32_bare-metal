@@ -21,6 +21,10 @@ int main(int ac, char **av)
   uart_init();
   led_init();
 
+  const uint8_t str[] = { 'H', 'e', 'l', 'l', 'o', '\n' };
+
+  uart_puts(str);
+
   // while (1)
   // {
   //   led_g_on();

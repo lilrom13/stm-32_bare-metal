@@ -140,6 +140,9 @@ void uart_putchar(uint8_t c)
 
     // CTP 7.
     USART1->TDR = (USART1->TDR & ~USART_TDR_TDR_Msk) | (c << USART_TDR_TDR_Pos);
+
+    // CTP 8.
+    while (!(USART1->ISR &USART_ISR_TC_Msk));
 }
 
 uint8_t uart_getchar()
@@ -149,6 +152,11 @@ uint8_t uart_getchar()
 
 void uart_puts(const uint8_t *s)
 {
+    while (*s != '\0')
+    {
+        uart_putchar(*s);
+        s++;
+    }
 }
 
 void uart_gets(uint8_t *s, size_t size)
