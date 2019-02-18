@@ -19,12 +19,18 @@ int main(int ac, char **av)
 {
   clocks_init();
   uart_init();
-  led_init();
+  // led_init();
 
-  const uint8_t str[] = { 'H', 'e', 'l', 'l', 'o', '\n' };
+  uint8_t str = 0;
+  // uint8_t *s = 0;
 
-  uart_puts(str);
+  // uart_gets(s, 4);
 
+  while (1)
+  {
+    uart_gets(&str, 4);
+    uart_puts(&str);
+  }
   // while (1)
   // {
   //   led_g_on();
