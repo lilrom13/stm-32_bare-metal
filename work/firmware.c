@@ -1,6 +1,7 @@
 #include "led.h"
 #include "clocks.h"
 #include "uart.h"
+#include "matrix.h"
 
 void delay(int loop)
 {
@@ -19,6 +20,9 @@ int main(int ac, char **av)
 {
   clocks_init();
   uart_init();
+  matrix_init();
+  test_pixels();
+
   // led_init();
 
   uint8_t str = 0;
