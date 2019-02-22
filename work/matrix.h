@@ -9,5 +9,6 @@ typedef struct {
 
 void matrix_init(void);
 void test_pixels();
+void display_image_loop(rgb_color *image);
 
 #endif // MATRIX_H_

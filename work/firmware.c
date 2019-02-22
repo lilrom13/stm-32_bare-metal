@@ -3,6 +3,8 @@
 #include "uart.h"
 #include "matrix.h"
 
+extern rgb_color _binary_image_raw_start;
+
 void delay(int loop)
 {
   for (int i = 0; i < loop; i++)
@@ -21,20 +23,22 @@ int main(int ac, char **av)
   clocks_init();
   uart_init();
   matrix_init();
-  test_pixels();
+
+  // test_pixels();
+  display_image_loop(&_binary_image_raw_start);
 
   // led_init();
 
-  uint8_t str = 0;
+  // uint8_t str = 0;
   // uint8_t *s = 0;
 
   // uart_gets(s, 4);
 
-  while (1)
-  {
-    uart_gets(&str, 4);
-    uart_puts(&str);
-  }
+  // while (1)
+  // {
+  //   uart_gets(&str, 4);
+  //   uart_puts(&str);
+  // }
   // while (1)
   // {
   //   led_g_on();
