@@ -1,19 +1,19 @@
 #include "stm32l475xx.h"
 #include "matrix.h"
 
-#define RST(x)      (x) ? GPIOC->BRR |= GPIO_BSRR_BS3 : (GPIOC->BRR |= GPIO_BSRR_BR3)
-#define SB(x)       (x) ? GPIOC->BRR |= GPIO_BSRR_BS5 : (GPIOC->BRR |= GPIO_BSRR_BR5)
-#define LAT(x)      (x) ? GPIOC->BRR |= GPIO_BSRR_BS4 : (GPIOC->BRR |= GPIO_BSRR_BR4)
-#define SCK(x)      (x) ? GPIOB->BRR |= GPIO_BSRR_BS1 : (GPIOC->BRR |= GPIO_BSRR_BR1)
-#define SDA(x)      (x) ? GPIOA->BRR |= GPIO_BSRR_BS4 : (GPIOC->BRR |= GPIO_BSRR_BR4)
-#define ROW0(x)     (x) ? GPIOB->BRR |= GPIO_BSRR_BS2 : (GPIOC->BRR |= GPIO_BSRR_BR2)
-#define ROW1(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS15: (GPIOC->BRR |= GPIO_BSRR_BR15)
-#define ROW2(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS2 : (GPIOC->BRR |= GPIO_BSRR_BR2)
-#define ROW3(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS7 : (GPIOC->BRR |= GPIO_BSRR_BR7)
-#define ROW4(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS6 : (GPIOC->BRR |= GPIO_BSRR_BR6)
-#define ROW5(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS5 : (GPIOC->BRR |= GPIO_BSRR_BR5)
-#define ROW6(x)     (x) ? GPIOB->BRR |= GPIO_BSRR_BS0 : (GPIOC->BRR |= GPIO_BSRR_BR0)
-#define ROW7(x)     (x) ? GPIOA->BRR |= GPIO_BSRR_BS3 : (GPIOC->BRR |= GPIO_BSRR_BR3)
+#define RST(x)      (x) ? (GPIOC->BRR |= GPIO_BSRR_BS3): (GPIOC->BRR |= GPIO_BSRR_BR3)
+#define SB(x)       (x) ? (GPIOC->BRR |= GPIO_BSRR_BS5): (GPIOC->BRR |= GPIO_BSRR_BR5)
+#define LAT(x)      (x) ? (GPIOC->BRR |= GPIO_BSRR_BS4): (GPIOC->BRR |= GPIO_BSRR_BR4)
+#define SCK(x)      (x) ? (GPIOB->BRR |= GPIO_BSRR_BS1): (GPIOC->BRR |= GPIO_BSRR_BR1)
+#define SDA(x)      (x) ? (GPIOA->BRR |= GPIO_BSRR_BS4): (GPIOC->BRR |= GPIO_BSRR_BR4)
+#define ROW0(x)     (x) ? (GPIOB->BRR |= GPIO_BSRR_BS2): (GPIOC->BRR |= GPIO_BSRR_BR2)
+#define ROW1(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS15): (GPIOC->BRR |= GPIO_BSRR_BR15)
+#define ROW2(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS2): (GPIOC->BRR |= GPIO_BSRR_BR2)
+#define ROW3(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS7): (GPIOC->BRR |= GPIO_BSRR_BR7)
+#define ROW4(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS6): (GPIOC->BRR |= GPIO_BSRR_BR6)
+#define ROW5(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS5): (GPIOC->BRR |= GPIO_BSRR_BR5)
+#define ROW6(x)     (x) ? (GPIOB->BRR |= GPIO_BSRR_BS0): (GPIOC->BRR |= GPIO_BSRR_BR0)
+#define ROW7(x)     (x) ? (GPIOA->BRR |= GPIO_BSRR_BS3): (GPIOC->BRR |= GPIO_BSRR_BR3)
 
 void matrix_init()
 {
@@ -92,20 +92,16 @@ void matrix_init()
 
 void pulse_SCK()
 {
-    while (1)
-    {
-        RST(0);
-        RST(1);
-    }
+    RST(0);
+    RST(1);
+    RST(0);
 }
 
 void pulse_LAT()
 {
-    while (1)
-    {
-        LAT(0);
-        LAT(1);
-    }
+    LAT(0);
+    LAT(1);
+    LAT(0);
 }
 
 /*
